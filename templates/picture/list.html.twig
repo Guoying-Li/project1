@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+ <a href="{{path('app_picture')}}" class="btn btn-success">Ajouter</a>
+
+<table class="table">
+  <thead>
+  
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">id</th>
+      <th scope="col">Nom</th>
+      <th scope="col">Lieu</th>
+      <th scope="col">Date</th>
+       <th scope="col">Evenement</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for p in pictures %}
+    <tr>
+    
+        <th scope="row"</th>
+        <td>{{ p.id }}</td>
+        <td><a href="{{path('picture_card')}}">Detail</a></td>
+        <td>{{ p.Place }}</td>
+        <td>{{ p.date | date('d-m-y') }}</td>
+        <td>{{ p.event.title | default('Sans evenement')}}</td>
+        <td>
+        {# <a  href="{{path('', {id: p.id})}}" class="btn btn-primary">Voir</a></td> #}
+            <a href="{{path('picture_edit', {id: p.id})}}" class="btn btn-warning">Modifier</a>
+            <a  href="{{path('picture_delete', {id: p.id})}}" class="btn btn-danger">Supprimer</a></td>
+    </tr>
+{% endfor %}
+
+  </tbody>
+</table>
+{# ... your existing template code ... #}
+
+{# Display pagination links #}
+{# ... your existing template code ... #}
+
+{# Display pagination links #}
+
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item">
+      <a class="page-link" href="{{ path('picture_list', {'page': currentPage - 1}) }}"{% if currentPage == 1 %} style="pointer-events: none; color: #6c757d;"{% endif %}>
+        Previous
+      </a>
+    </li>
+    
+    {% for page in 1..totalPages %}
+      <li class="page-item">
+        <a class='page-link' href="{{ path('picture_list', {'page': page}) }}" {% if page == currentPage %}class="active "{% endif %}>{{ page }}</a>
+      </li>
+    {% endfor %}
+    
+    <li class="page-item">
+      <a class="page-link" href="{{ path('picture_list', {'page': currentPage + 1}) }}"{% if currentPage == totalPages %} style="pointer-events: none; color: #6c757d;"{% endif %}>
+        Next
+      </a>
+    </li>
+  </ul>
+</nav>
+
+</div>
+{% endblock %}

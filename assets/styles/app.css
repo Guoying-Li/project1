@@ -1,3 +1,9 @@
 body {
     background-color: skyblue;
 }
+
+a{
+    list-style: none;
+    text-decoration: none;
+   
+}
