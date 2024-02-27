@@ -18,6 +18,7 @@
       <th scope="col">id</th>
       <th scope="col">Nom</th>
       <th scope="col">Lieu</th>
+       <th scope="col">Auteur</th> 
       <th scope="col">Date</th>
        <th scope="col">Evenement</th>
       <th scope="col">Actions</th>
@@ -31,6 +32,7 @@
         <td>{{ p.id }}</td>
         <td><a href="{{path('picture_card')}}">Detail</a></td>
         <td>{{ p.Place }}</td>
+         <td>{{p.createdBy.firstname}}</td> 
         <td>{{ p.date | date('d-m-y') }}</td>
         <td>{{ p.event.title | default('Sans evenement')}}</td>
         <td>
@@ -42,12 +44,6 @@
 
   </tbody>
 </table>
-{# ... your existing template code ... #}
-
-{# Display pagination links #}
-{# ... your existing template code ... #}
-
-{# Display pagination links #}
 
 <nav aria-label="Page navigation example">
   <ul class="pagination">

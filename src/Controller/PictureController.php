@@ -4,6 +4,8 @@ namespace App\Controller;
 use DateTime;
 use App\Entity\Picture;
 use App\Form\PictureType;
+use App\Repository\UserRepository;
+use App\Security\Voter\PictureVoter;
 use App\Repository\PictureRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,22 +17,28 @@ class PictureController extends AbstractController
 {
 
     #[Route('/picture', name: 'app_picture')]
-    public function index(EntityManagerInterface $entityManager, PictureRepository $pictureRepository, Request $request): Response
+    public function index(UserRepository $userRepository, EntityManagerInterface $entityManager, PictureRepository $pictureRepository, Request $request): Response
 
     {
-        
+        $users = $userRepository->findAll();
+        foreach ($users as $user) {
+
+       
         $picture = new Picture();
         $form = $this -> createForm(PictureType::class, $picture);
         $form -> handleRequest($request);
 
         if($form-> isSubmitted() && $form -> isValid()) {
-            $picture = $form -> getData();
+            $picture = $form -> getData()
+                             ->setCreatedBy($user);
+           
             $entityManager -> persist($picture);
             $entityManager -> flush();
 
              return $this -> redirectToRoute('picture_list');
          
         }
+    }
      
         return $this->render('picture/index.html.twig', [
             'picForm' => $form,
@@ -40,8 +48,9 @@ class PictureController extends AbstractController
     }
 
     #[Route('/pictureList', name: 'picture_list')]
-
-    public function list( PictureRepository $pictureRepository,  Request $request) :Response
+    
+    #[IsGranted(PictureVoter::VIEW, 'picture')]
+    public function list(Picture $picture, PictureRepository $pictureRepository,  Request $request) :Response
     {
          $page = $request->query->getInt('page', 1); 
         $limit = 10;
@@ -59,6 +68,7 @@ class PictureController extends AbstractController
             'pictures' => $paginatedPictures,
             'totalPages' => $totalPages,
             'currentPage' => $page,
+            'picture' => $picture,
         ]);
         
 

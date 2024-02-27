@@ -25,6 +25,12 @@ class Event
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: Picture::class)]
     private Collection $pictures;
 
+    #[ORM\ManyToOne(inversedBy: 'createdEvent')]
+    private ?User $createdBy = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $isPublic = null;
+
     public function __construct()
     {
         $this->pictures = new ArrayCollection();
@@ -85,6 +91,30 @@ class Event
                 $picture->setEvent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): static
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    public function isIsPublic(): ?bool
+    {
+        return $this->isPublic;
+    }
+
+    public function setIsPublic(?bool $isPublic): static
+    {
+        $this->isPublic = $isPublic;
 
         return $this;
     }

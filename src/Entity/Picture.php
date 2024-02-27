@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Entity;
-
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -26,6 +25,12 @@ class Picture
 
     #[ORM\ManyToOne(inversedBy: 'pictures')]
     private ?Event $event = null;
+
+    #[ORM\ManyToOne(inversedBy: 'createdPicture')]
+    private ?User $createdBy = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $isPublic = null;
 
     public function getId(): ?int
     {
@@ -76,6 +81,30 @@ class Picture
     public function setEvent(?Event $event): static
     {
         $this->event = $event;
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): static
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    public function isIsPublic(): ?bool
+    {
+        return $this->isPublic;
+    }
+
+    public function setIsPublic(?bool $isPublic): static
+    {
+        $this->isPublic = $isPublic;
 
         return $this;
     }

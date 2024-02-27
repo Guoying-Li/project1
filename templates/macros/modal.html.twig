@@ -1,0 +1,97 @@
+{% macro deleteUserModal(u) %}
+  <!-- Button trigger modal -->
+<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{u.id}}">
+  Supprimer
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteModal{{u.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+         <p>Etes-vous sûr de Supprimer le compte de {{ u.email }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <a type="button" href="{{ path('app_user_delete', { id: u.id }) }}" class="btn btn-danger">Supprimer</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro createUserModal(form) %}
+ <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Crée un utilisateur
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    {{form_start(form)}}
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Cration d'un utilisateur</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+  {{form_row(form.email)}}
+  {{form_row(form.firstname)}}
+  {{form_row(form.lastname)}}
+  {{form_row(form.password)}}
+  {{form_row(form.save)}}
+      </div>
+      <div class="modal-footer">
+      
+      </div>
+      {{form_end(form)}}
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro editRoles(user) %}
+  <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editRolesModal{{user.id}}">
+    Affecter des rôles
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="editRolesModal{{user.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Affecter des rôles</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="{{ path('app_user_set_roles', {'id': user.id}) }}" method="post">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="{{ user.id }}-roles-user" id="{{ user.id }}-roles-user" value="1">
+              <label class="form-check-label" for="{{ user.id }}-roles-user">
+                Rôles utilisateur
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="{{ user.id }}-roles-admin" id="{{ user.id }}-roles-admin"value="1" checked>
+              <label class="form-check-label" for="{{ user.id }}-roles-admin">
+                Rôles admin
+              </label>
+            </div>
+            <div class="modal-footer">
+            <inout type="hiden" name= "_token" value"{{csrf_token('role-' ~ user.id)}}">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+              <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endmacro %}
+
+

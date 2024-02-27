@@ -17,6 +17,7 @@ class EventController extends AbstractController
     #[Route('/event', name: 'app_event')]
     public function index(EntityManagerInterface $entityManager, EventRepository $eventRepository, Request $request): Response
     {
+        // $user = $this->getUser();
         $event = new Event();
         $form = $this -> createForm(EventType::class, $event);
         $form -> handleRequest($request);
@@ -34,23 +35,18 @@ class EventController extends AbstractController
     }
 
     #[Route('/eventList', name: 'event_list')]
-
-    public function list( EventRepository $eventRepository,  Request $request) :Response
+    #[IsGranted('view', 'event')]
+    public function list(EventRepository $eventRepository): Response
     {
-
         $events = $eventRepository->findAll();
-
-
+    
         return $this->render('event/list.html.twig', [
-            'events' => $events
+            'events' => $events,
         ]);
-
     }
+    
     #[Route('/event/{id}/handleAddPicture', name: 'app_event_handleAddPicture')]
-
-
-   
-
+    
     public function handleAddPicture (EntityManagerInterface $entityManager, Event $event,  Request $request, int $id) :Response
     {
         $form = $this ->createForm(AddPictureType::class, $event);
@@ -69,7 +65,8 @@ class EventController extends AbstractController
         return $this -> redirectToRoute('event_list', ['id' => $event ->getId()]);
     }
     #[Route('/event/{id}edit', name: 'event_edit')]
-    public function edit (EntityManagerInterface $entityManager, EventRepository $eventRepository,  Request $request, int $id) :Response
+
+    public function edit (Event $event, EntityManagerInterface $entityManager, EventRepository $eventRepository,  Request $request, int $id) :Response
     {
         $event =$eventRepository ->find($id);
         $form = $this -> createForm(EventType::class, $event);

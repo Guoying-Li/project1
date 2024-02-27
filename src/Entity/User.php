@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -32,6 +34,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     private ?string $lastname = null;
+
+    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Picture::class)]
+    private Collection $createdPicture;
+
+    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Event::class)]
+    private Collection $createdEvent;
+
+    public function __construct()
+    {
+        $this->createdPicture = new ArrayCollection();
+        $this->createdEvent = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -123,6 +137,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastname(string $lastname): static
     {
         $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Picture>
+     */
+    public function getCreatedPicture(): Collection
+    {
+        return $this->createdPicture;
+    }
+
+    public function addCreatedPicture(Picture $createdPicture): static
+    {
+        if (!$this->createdPicture->contains($createdPicture)) {
+            $this->createdPicture->add($createdPicture);
+            $createdPicture->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreatedPicture(Picture $createdPicture): static
+    {
+        if ($this->createdPicture->removeElement($createdPicture)) {
+            // set the owning side to null (unless already changed)
+            if ($createdPicture->getCreatedBy() === $this) {
+                $createdPicture->setCreatedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getCreatedEvent(): Collection
+    {
+        return $this->createdEvent;
+    }
+
+    public function addCreatedEvent(Event $createdEvent): static
+    {
+        if (!$this->createdEvent->contains($createdEvent)) {
+            $this->createdEvent->add($createdEvent);
+            $createdEvent->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreatedEvent(Event $createdEvent): static
+    {
+        if ($this->createdEvent->removeElement($createdEvent)) {
+            // set the owning side to null (unless already changed)
+            if ($createdEvent->getCreatedBy() === $this) {
+                $createdEvent->setCreatedBy(null);
+            }
+        }
 
         return $this;
     }
