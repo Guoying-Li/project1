@@ -31,9 +31,13 @@ class Event
     #[ORM\Column(nullable: true)]
     private ?bool $isPublic = null;
 
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'sharedEvents')]
+    private Collection $sharedTo;
+
     public function __construct()
     {
         $this->pictures = new ArrayCollection();
+        $this->sharedTo = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -115,6 +119,30 @@ class Event
     public function setIsPublic(?bool $isPublic): static
     {
         $this->isPublic = $isPublic;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getSharedTo(): Collection
+    {
+        return $this->sharedTo;
+    }
+
+    public function addSharedTo(User $sharedTo): static
+    {
+        if (!$this->sharedTo->contains($sharedTo)) {
+            $this->sharedTo->add($sharedTo);
+        }
+
+        return $this;
+    }
+
+    public function removeSharedTo(User $sharedTo): static
+    {
+        $this->sharedTo->removeElement($sharedTo);
 
         return $this;
     }

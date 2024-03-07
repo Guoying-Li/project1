@@ -19,10 +19,11 @@ class AddPictureType extends AbstractType
             ->add('pictures', EntityType::class, [
                 'class' => Picture::class,
                 'label' => 'images disponible',
-                'qurey_builder' => function(PictureRepository $pictureRepository) {
+                'query_builder' => function(PictureRepository $pictureRepository) {
                     return $pictureRepository ->findAllWithoutEvent;
                 },
-                'chocie_label' => 'Filename'
+                'chocie_label' => 'Filename',
+                'multiple' => true
             ])
             ->add('save', SubmitType::class, [
                 'label' => "Ajouter les photos"

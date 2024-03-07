@@ -51,9 +51,7 @@ class EventController extends AbstractController
     {
         $form = $this ->createForm(AddPictureType::class, $event);
         $form -> handleRequest($request);
-        $picForm = $this ->createFrom(AddPictureType::class, $event,[
-            'action' => $this ->generateUrl('app_event_handleAddPicture', ['id' => $event ->getId()])
-        ]);
+ 
         if($form -> isSubmitted() && $form -> isValid())
         {
             $pictures = $form -> getData() -> getPictures();
@@ -64,12 +62,18 @@ class EventController extends AbstractController
         }
         return $this -> redirectToRoute('event_list', ['id' => $event ->getId()]);
     }
+
+
     #[Route('/event/{id}edit', name: 'event_edit')]
 
     public function edit (Event $event, EntityManagerInterface $entityManager, EventRepository $eventRepository,  Request $request, int $id) :Response
     {
         $event =$eventRepository ->find($id);
         $form = $this -> createForm(EventType::class, $event);
+
+        $picForm = $this ->createForm(AddPictureType::class, $event,[
+            'action' => $this ->generateUrl('app_event_handleAddPicture', ['id' => $event ->getId()])
+        ]); 
    
         $form -> handleRequest($request);
         
@@ -97,4 +101,9 @@ class EventController extends AbstractController
         return $this->redirectToRoute('event_list');
     }
 
+    #[Route('/event/{id<\d*>}/handleAppShareUser', name: 'app_event_handleAppShareUser')]
+    public function handleAppShareUser(EntityManagerInterface $entityManager, EventRepository $eventRepository): Response
+    {
+        
+    }
 }

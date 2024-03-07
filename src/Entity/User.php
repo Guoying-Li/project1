@@ -41,10 +41,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Event::class)]
     private Collection $createdEvent;
 
+    #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'sharedTo')]
+    private Collection $sharedEvents;
+
     public function __construct()
     {
         $this->createdPicture = new ArrayCollection();
         $this->createdEvent = new ArrayCollection();
+        $this->sharedEvents = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -199,5 +203,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getSharedEvents(): Collection
+    {
+        return $this->sharedEvents;
+    }
+
+    public function addSharedEvent(Event $sharedEvent): static
+    {
+        if (!$this->sharedEvents->contains($sharedEvent)) {
+            $this->sharedEvents->add($sharedEvent);
+            $sharedEvent->addSharedTo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSharedEvent(Event $sharedEvent): static
+    {
+        if ($this->sharedEvents->removeElement($sharedEvent)) {
+            $sharedEvent->removeSharedTo($this);
+        }
+
+        return $this;
+    }
+    public function getFullname(): string
+    {
+        return  $this->firstname . ' '. $this->lastname . '';
+    }
+    public function __toString()
+    {
+        return $this->id;
     }
 }
